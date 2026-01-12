@@ -52,12 +52,34 @@ export default defineConfig(async () => {
     build: {
       outDir: path.resolve(__dirname, "dist/public"),
       emptyOutDir: true,
+      // CSS optimization settings
+      minify: 'esbuild',
+      cssMinify: true,
+      // Enable CSS code splitting for better caching
+      cssCodeSplit: true,
+      // Target modern browsers for smaller bundle
+      target: 'es2015',
+      // Chunk splitting strategy
+      rollupOptions: {
+        output: {
+          // Manual chunks for better code splitting
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router'],
+            'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
+            'vendor-utils': ['clsx', 'tailwind-merge', 'lucide-react'],
+          },
+        },
+      },
     },
     server: {
       fs: {
         strict: true,
         deny: ["**/.*"],
       },
+    },
+    // Enable optimized dependencies
+    optimizeDeps: {
+      include: ['react', 'react-dom', '@radix-ui/react-dialog', 'lucide-react'],
     },
   };
 });
