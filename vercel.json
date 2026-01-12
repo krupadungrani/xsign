@@ -2,12 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client",
+  "outputDirectory": "dist/public",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "regions": ["iad1"],
   "functions": {
     "api/**/*.ts": {
+      "runtime": "edge",
       "maxDuration": 30
     }
   },
@@ -19,10 +20,24 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
+    },
+    {
+      "source": "/(.*).pdf",
+      "headers": [
+        { "key": "Content-Type", "value": "application/pdf" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/client/index.html" }
+    { "source": "/", "destination": "/index.html" }
   ]
 }
+
